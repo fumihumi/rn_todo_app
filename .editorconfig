@@ -1,0 +1,23 @@
+root = true
+
+# 改行コードと改行後ろの空白削除の有無を指定したいとき
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+# 特定の複数拡張子を指定するとき
+# 文字コードの設定するとき
+[*.{js,py}]
+charset = utf-8
+indent_style = space
+indent_size = 2
+
+# スペース4つのインデントにしたいとき
+# タブインデントにしたいとき
+[Makefile]
+indent_style = tab
+
+# package.jsonまたは.travis.ymlに合致しているとき
+[{package.json,.travis.yml}]
+indent_style = space
+indent_size = 2
