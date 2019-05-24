@@ -1,39 +1,57 @@
-export class ApiClient {
-	public static async get(path: string) {
-			return await this.call(path, 'GET');
-	}
+/* eslint no-return-await: 0 */
+/* eslint @typescript-eslint/explicit-function-return-type: 0 */
+import { API_BASE_URL } from "react-native-dotenv";
 
-	public static async patch(path: string, body?: object) {
-			return await this.call(path, 'PATCH', body);
-	}
+interface HeaderType {
+  "Content-Type": string;
+  Authorization?: string;
+}
 
-	public static async post(path: string, body?: object) {
-			return await this.call(path, 'POST', body);
-	}
+class ApiClient {
+  public static async get(path: string, token: string) {
+    return await this.call(path, "GET", token);
+  }
 
-	public static async delete(path: string) {
-			await this.call(path, 'DELETE');
-			return null;
-	}
+  public static async patch(path: string, token: stirng, body?: object) {
+    return await this.call(path, "PATCH", token, body);
+  }
 
-	private static async call(path: string, method: string, body?: object) {
-			const res = await fetch(this.requestUrl(path), {
-					headers: { 'Content-Type': 'application/json' },
-					method,
-					credentials: 'include',
-					body: JSON.stringify(body),
-			});
+  public static async post(path: string, token?: string, body?: object) {
+    return await this.call(path, "POST", token, body);
+  }
 
-			const data = await res.json();
+  public static async delete(path: string, token?: string) {
+    await this.call(path, "DELETE", token);
+    return null;
+  }
 
-			if (res.status !== 200) throw new Error(data.result);
-			return data;
-	}
+  private static async call(
+    path: string,
+    method: string,
+    token?: string,
+    body?: object
+  ) {
+    const headers: HeaderType = { "Content-Type": "application/json" };
+    if (token) headers.Authorization = `Bearer ${token}`;
 
-	private static requestUrl = (path: string) => {
-			return 'http://localhost:3000/api' + path;
-	}
+    // eslint-disable-next-line no-undef
+    const res = await fetch(this.requestUrl(path), {
+      headers,
+      method,
+      credentials: "include",
+      body: JSON.stringify(body)
+    });
 
+    const data = await res.json();
+
+    if (res.status !== 200) throw new Error(data.result);
+    return data;
+  }
+
+  private static requestUrl = (path: string) => {
+    return `${API_BASE_URL}/${path}`;
+    // return `http://localhost:3000/api${path}`;
+  };
 }
 
 // How to use
@@ -45,3 +63,5 @@ export class ApiClient {
 // public static async delete(product: Product) {
 //     await ApiClient.delete('/apis/products/' + product.id);
 // }
+
+export default ApiClient;
